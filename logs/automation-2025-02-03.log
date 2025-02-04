@@ -1,0 +1,64 @@
+15:34:38.930 [main] INFO  testCases.TC001_AccountRegistrationTest - **** TC001_AccountRegistrationTest Completed.....
+18:08:59.752 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\grouping.xml"
+18:09:00.138 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\grouping.xml
+
+18:12:38.599 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:12:38.962 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:14:10.677 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:14:11.141 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:15:02.126 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:15:02.556 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:25:20.560 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:25:21.047 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:25:37.671 [main] INFO  testCases.TC001_AccountRegistrationTest - **** Starting TC001_AccountRegistrationTest ****
+18:25:37.935 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on MyAccount Link..
+18:25:40.722 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on Register Link..
+18:25:40.731 [main] INFO  testCases.TC001_AccountRegistrationTest - Entering Customer Details....
+18:25:44.092 [main] INFO  testCases.TC001_AccountRegistrationTest - Validating expected message..
+18:25:44.174 [main] INFO  testCases.TC001_AccountRegistrationTest - **** TC001_AccountRegistrationTest Completed.....
+18:25:53.239 [main] INFO  testCases.TC002_LoginTest - ....Starting TC002 Login Test....
+18:25:54.215 [main] INFO  testCases.TC002_LoginTest - ....Entering  Email & Password....
+18:25:54.591 [main] INFO  testCases.TC002_LoginTest - ....Clicked Login Button....
+18:25:55.861 [main] INFO  testCases.TC002_LoginTest - ....Finished TC002 Login Test....
+18:31:46.986 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:31:47.247 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:31:58.534 [main] INFO  testCases.TC001_AccountRegistrationTest - **** Starting TC001_AccountRegistrationTest ****
+18:31:58.655 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on MyAccount Link..
+18:32:01.080 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on Register Link..
+18:32:01.084 [main] INFO  testCases.TC001_AccountRegistrationTest - Entering Customer Details....
+18:32:03.041 [main] INFO  testCases.TC001_AccountRegistrationTest - Validating expected message..
+18:32:03.088 [main] INFO  testCases.TC001_AccountRegistrationTest - **** TC001_AccountRegistrationTest Completed.....
+18:32:10.538 [main] INFO  testCases.TC002_LoginTest - ....Starting TC002 Login Test....
+18:32:11.315 [main] INFO  testCases.TC002_LoginTest - ....Entering  Email & Password....
+18:32:11.597 [main] INFO  testCases.TC002_LoginTest - ....Clicked Login Button....
+18:32:12.741 [main] INFO  testCases.TC002_LoginTest - ....Finished TC002 Login Test....
+18:32:51.999 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:32:52.327 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:37:50.787 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:37:51.070 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:51:52.139 [main] DEBUG org.testng.TestNG - suiteXmlPath: "C:\Users\Aniket\eclipse-workspace\opencart\master.xml"
+18:51:52.452 [main] INFO  org.testng.internal.Utils - [TestNG] Running:
+  C:\Users\Aniket\eclipse-workspace\opencart\master.xml
+
+18:52:03.968 [main] INFO  testCases.TC001_AccountRegistrationTest - **** Starting TC001_AccountRegistrationTest ****
+18:52:04.213 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on MyAccount Link..
+18:52:07.730 [main] INFO  testCases.TC001_AccountRegistrationTest - Clicked on Register Link..
+18:52:07.736 [main] INFO  testCases.TC001_AccountRegistrationTest - Entering Customer Details....
+18:52:10.029 [main] INFO  testCases.TC001_AccountRegistrationTest - Validating expected message..
+18:52:10.084 [main] INFO  testCases.TC001_AccountRegistrationTest - **** TC001_AccountRegistrationTest Completed.....
+18:52:21.400 [main] INFO  testCases.TC002_LoginTest - ....Starting TC002 Login Test....
