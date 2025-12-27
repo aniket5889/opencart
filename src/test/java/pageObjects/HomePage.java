@@ -21,6 +21,15 @@ public class HomePage extends BasePage {
 	@FindBy(xpath="//a[normalize-space()='Login']")
 	WebElement lnkLogin;
 	
+	@FindBy(xpath="//a[normalize-space()='Qafox.com']")
+	WebElement HomePage;
+	
+	@FindBy(xpath="//button[@onclick=\"cart.add('43');\"]")
+	WebElement btnAddToCart;
+	
+	@FindBy(xpath="//div[@class=\"alert alert-success alert-dismissible\"]")
+	WebElement msgSuccess;
+	
 	public void clickMyAccount() {
 		lnkAccount.click();
 	}
@@ -31,6 +40,22 @@ public class HomePage extends BasePage {
 	
 	public void clickLogin() {
 		lnkLogin.click();
+	}
+	
+	public void clickHomePage() {
+		HomePage.click();
+	}
+	
+	public void clickAddToCart() {
+		btnAddToCart.click();
+	}
+	
+	public boolean isSuccessMessageExists() {
+		try {
+		return(msgSuccess.isDisplayed());
+		}catch(Exception e) {
+			return false;
+		}
 	}
 	
 

@@ -100,7 +100,6 @@ public class BaseClass {
         return RandomStringUtils.randomNumeric(10);
     }
 
-    // ✅ MISSING METHOD (ADDED BACK)
     public String randomAlphanumeric() {
         return RandomStringUtils.randomAlphabetic(4) + "@" +
                RandomStringUtils.randomNumeric(3);

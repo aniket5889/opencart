@@ -3,9 +3,13 @@ package utilities;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.*;
 
 import com.aventstack.extentreports.*;
@@ -15,37 +19,42 @@ import testBase.BaseClass;
 
 public class ExtentReportUtility implements ITestListener {
 
-    private static ExtentReports extent;
+    // Thread-safe ExtentReports and ExtentTest
+    private static ThreadLocal<ExtentReports> extent = new ThreadLocal<>();
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
-
-    private String reportPath;
+    private static ThreadLocal<String> reportPath = new ThreadLocal<>();
 
     @Override
     public void onStart(ITestContext context) {
+        try {
+            String browser = context.getCurrentXmlTest().getParameter("browser");
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-        String browser = BaseClass.getBrowserName();
-        String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            // Path for the report
+            String path = System.getProperty("user.dir")
+                    + "/reports/Report_" + browser + "_" + timeStamp + ".html";
+            reportPath.set(path);
 
-        reportPath = System.getProperty("user.dir")
-                + "/reports/Report_" + browser + "_" + time + ".html";
+            ExtentSparkReporter spark = new ExtentSparkReporter(path);
+            spark.config().setReportName("OpenCart Automation - " + browser);
+            spark.config().setDocumentTitle("Automation Report");
 
-        ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
-        spark.config().setReportName("OpenCart Automation - " + browser);
-        spark.config().setDocumentTitle("Automation Report");
+            ExtentReports ext = new ExtentReports();
+            ext.attachReporter(spark);
+            ext.setSystemInfo("Browser", browser);
+            ext.setSystemInfo("OS", context.getCurrentXmlTest().getParameter("os"));
+            ext.setSystemInfo("User", System.getProperty("user.name"));
 
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
-
-        extent.setSystemInfo("Browser", browser);
-        extent.setSystemInfo("OS",
-                context.getCurrentXmlTest().getParameter("os"));
-        extent.setSystemInfo("User", System.getProperty("user.name"));
+            extent.set(ext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onTestStart(ITestResult result) {
-        ExtentTest extentTest = extent.createTest(
-                result.getMethod().getMethodName());
+        // Create thread-safe test instance
+        ExtentTest extentTest = extent.get().createTest(result.getMethod().getMethodName());
         test.set(extentTest);
     }
 
@@ -59,8 +68,19 @@ public class ExtentReportUtility implements ITestListener {
         test.get().fail(result.getThrowable());
 
         try {
-            String path = BaseClass.captureScreen(result.getName());
+            WebDriver driver = BaseClass.getDriver(); // Thread-safe WebDriver
+            TakesScreenshot ts = (TakesScreenshot) driver;
+            File source = ts.getScreenshotAs(OutputType.FILE);
+
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String path = System.getProperty("user.dir") + "/screenshots/"
+                    + result.getName() + "_" + timeStamp + ".png";
+
+            File dest = new File(path);
+            Files.copy(source.toPath(), dest.toPath());
+
             test.get().addScreenCaptureFromPath(path);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,10 +93,10 @@ public class ExtentReportUtility implements ITestListener {
 
     @Override
     public void onFinish(ITestContext context) {
-        extent.flush();
+        extent.get().flush();
 
         try {
-            Desktop.getDesktop().browse(new File(reportPath).toURI());
+            Desktop.getDesktop().browse(new File(reportPath.get()).toURI());
         } catch (Exception e) {
             e.printStackTrace();
         }
