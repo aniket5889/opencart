@@ -9,13 +9,13 @@ import testBase.BaseClass;
 
 public class TC001_AccountRegistrationTest extends BaseClass{
 	
-	@Test(groups = {"Sanity", "Master"})
+	@Test(groups = {"Sanity", "Master"}, retryAnalyzer = utilities.RetryAnalyzer.class)
 	public void verify_account_registration() {
 		
 		logger.info("**** Starting TC001_AccountRegistrationTest ****");
 		
 		try {
-			HomePage hp = new HomePage(driver);
+			HomePage hp = new HomePage(getDriver());
 			
 			hp.clickMyAccount();
 			logger.info("Clicked on MyAccount Link..");
@@ -23,7 +23,7 @@ public class TC001_AccountRegistrationTest extends BaseClass{
 			hp.clickRegister();
 			logger.info("Clicked on Register Link..");
 			
-			AccountRegistrationPage regpage = new AccountRegistrationPage(driver);
+			AccountRegistrationPage regpage = new AccountRegistrationPage(getDriver());
 			
 			logger.info("Entering Customer Details....");
 			regpage.setFirstName(randomString().toUpperCase());

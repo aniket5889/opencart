@@ -9,13 +9,33 @@
 		<listener class-name="utilities.ExtentReportUtility"></listener>
 	</listeners>
 
-  <test thread-count="5" name="Test">
+  <test thread-count="5" name="ChromeTest">
   <parameter name="os" value="Windows"/>
   <parameter name="browser" value="chrome"/>
     <classes>
       <class name="testCases.TC001_AccountRegistrationTest"/>
        <class name="testCases.TC002_LoginTest"/>
-      <!-- <class name="testCases.TC003_LoginDDT"/> -->
+      <class name="testCases.TC003_LoginDDT"/>
     </classes>
-  </test> <!-- Test -->
+  </test>
+  
+  <test thread-count="5" name="FireFoxTest">
+  <parameter name="os" value="Windows"/>
+  <parameter name="browser" value="Firefox"/>
+    <classes>
+      <class name="testCases.TC001_AccountRegistrationTest"/>
+       <class name="testCases.TC002_LoginTest"/>
+      <class name="testCases.TC003_LoginDDT"/>
+    </classes>
+  </test>
+  
+  <test thread-count="5" name="EdgeTest">
+  <parameter name="os" value="Windows"/>
+  <parameter name="browser" value="Edge"/>
+    <classes>
+      <class name="testCases.TC001_AccountRegistrationTest"/>
+       <class name="testCases.TC002_LoginTest"/>
+      <class name="testCases.TC003_LoginDDT"/>
+    </classes>
+  </test>
 </suite> <!-- Suite -->

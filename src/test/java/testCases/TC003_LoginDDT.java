@@ -1,6 +1,6 @@
 package testCases;
 
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import pageObjects.HomePage;
@@ -10,65 +10,44 @@ import testBase.BaseClass;
 import utilities.DataProviders;
 
 public class TC003_LoginDDT extends BaseClass {
-	
-	
-	@Test(dataProvider = "LoginData", dataProviderClass=DataProviders.class, groups = "Datadriven")
-	public void verify_loginDDT(String email, String pwd, String exp) {
-		
-		logger.info("Test Execution Started.");
-		
-		
-		try {
-		HomePage hp = new HomePage(driver);
-		LoginPage lp = new LoginPage(driver);
-		MyAccountPage macc = new MyAccountPage(driver);
-		
-		hp.clickMyAccount();
-		hp.clickLogin();
-		
-		lp.setEmail(email);
-		lp.setPassword(pwd);
-		lp.clickLogin();
-		
-		boolean targetPage = macc.isMyAccountPageExists();
-		Assert.assertTrue(targetPage);
-		
-		
-		//Valid data Test Cases
-		if(exp.equalsIgnoreCase("Valid"))
-		{
-			if(targetPage==true)
-			{
-				macc.clickLogout();
-				Assert.assertTrue(true);
-			}
-			else
-			{
-				Assert.assertTrue(false);
-			}
-			
-		}
-		
-		if(exp.equalsIgnoreCase("Invalid"))
-		{
-			if(targetPage==true)
-			{
-				macc.clickLogout();
-				Assert.assertTrue(false);
-			}
-			else
-			{
-				Assert.assertTrue(true);
-			}
-		}
-		
-		logger.info("Test Execution Completed.");
-		Thread.sleep(3000);
-		}catch(Exception e) {
-			Assert.fail();
-		}
-		
-		
-	}
-	
+
+    @Test(dataProvider = "LoginData",
+          dataProviderClass = DataProviders.class,
+          groups = "Datadriven", retryAnalyzer = utilities.RetryAnalyzer.class)
+    public void verify_loginDDT(String email, String pwd, String exp) {
+
+        logger.info("Test Execution Started for user: " + email);
+
+        try {
+            HomePage hp = new HomePage(getDriver());
+            LoginPage lp = new LoginPage(getDriver());
+            MyAccountPage macc = new MyAccountPage(getDriver());
+
+            hp.clickMyAccount();
+            hp.clickLogin();
+
+            lp.setEmail(email);
+            lp.setPassword(pwd);
+            lp.clickLogin();
+
+            boolean targetPage = macc.isMyAccountPageExists();
+
+            // VALID login scenario
+            if (exp.equalsIgnoreCase("Valid")) {
+                Assert.assertTrue(targetPage, "Login failed for valid credentials");
+                macc.clickLogout();
+            }
+
+            // INVALID login scenario
+            else if (exp.equalsIgnoreCase("Invalid")) {
+                Assert.assertFalse(targetPage, "Login succeeded for invalid credentials");
+            }
+
+            logger.info("Test Execution Completed.");
+
+        } catch (Exception e) {
+            logger.error("Test Failed due to exception: ", e);
+            Assert.fail(e.getMessage());
+        }
+    }
 }

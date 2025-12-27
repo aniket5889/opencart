@@ -10,15 +10,15 @@ import testBase.BaseClass;
 
 public class TC002_LoginTest extends BaseClass {
 
-	@Test(groups = {"Regression", "Master"})
+	@Test(groups = {"Regression", "Master"}, retryAnalyzer = utilities.RetryAnalyzer.class)
 	public void verify_login() {
 		logger.info("....Starting TC002 Login Test....");
 		
 		try {
 		//Page Object Instantiation
-		HomePage hp = new HomePage(driver);
-		LoginPage lp = new LoginPage(driver);
-		MyAccountPage macc = new MyAccountPage(driver);
+		HomePage hp = new HomePage(getDriver());
+		LoginPage lp = new LoginPage(getDriver());
+		MyAccountPage macc = new MyAccountPage(getDriver());
 		
 		hp.clickMyAccount();
 		hp.clickLogin();

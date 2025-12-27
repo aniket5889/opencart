@@ -5,102 +5,80 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import org.testng.*;
+
+import com.aventstack.extentreports.*;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
 import testBase.BaseClass;
 
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
-
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
-
 public class ExtentReportUtility implements ITestListener {
-	
-	public ExtentSparkReporter sparkReporter;
-	public ExtentReports extent;
-	public ExtentTest test;
-	
-	public String repName;
-	
-	public void onStart(ITestContext testContext) {
-		
-		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-		
-		repName = "Test-Report-" + timeStamp + ".html";
-		
-		sparkReporter = new ExtentSparkReporter(".\\reports\\" + repName);
-		
-		sparkReporter.config().setDocumentTitle("OpenCart Automation Report");
-		sparkReporter.config().setReportName("OpenCart Functional Testing");
-		sparkReporter.config().setTheme(Theme.DARK);
-		
-		extent = new ExtentReports();
-		extent.attachReporter(sparkReporter);
-		extent.setSystemInfo("Application","OpenCart");
-		extent.setSystemInfo("Module","Admin");
-		extent.setSystemInfo("Sub Module","Customers");
-		extent.setSystemInfo("Username",System.getProperty("user.name"));
-		extent.setSystemInfo("Environment","QA");
-		
-		String os = testContext.getCurrentXmlTest().getParameter("os");
-		extent.setSystemInfo("Operating System", os);
-		
-		String browser = testContext.getCurrentXmlTest().getParameter("browser");
-		extent.setSystemInfo("Browser", browser);
-		
-		List<String> includedGroups = testContext.getCurrentXmlTest().getIncludedGroups();
-		if(!includedGroups.isEmpty()) {
-			extent.setSystemInfo("Groups", includedGroups.toString());
-		}
 
-	}
-	
-	public void onTestSuccess(ITestResult result) {
-		
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups());
-		test.log(Status.PASS, result.getName()+" got Successfully executed.");
-	}
-	
-	public void onTestFailure(ITestResult result) {
-		
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups());
-		
-		test.log(Status.FAIL, result.getName()+" got Failed.");
-		test.log(Status.INFO, result.getThrowable().getMessage());
-		
-		try {
-			String imgPath = new BaseClass().captureScreen(result.getName());
-			test.addScreenCaptureFromPath(imgPath);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
-	public void onTestSkipped(ITestResult result) {
-		test = extent.createTest(result.getTestClass().getName());
-		test.assignCategory(result.getMethod().getGroups());
-		test.log(Status.SKIP, result.getName()+" got Skipped.");
-		test.log(Status.INFO, result.getThrowable().getMessage());
-	}
-	
-	public void onFinish(ITestContext testContext) {
-		
-		extent.flush();
-		
-		String pathOfExtentReport = System.getProperty("user.dir")+"\\reports\\"+repName;
-		File extentReport = new File(pathOfExtentReport);
-		
-		try {
-			Desktop.getDesktop().browse(extentReport.toURI());
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+    private static ExtentReports extent;
+    private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
+
+    private String reportPath;
+
+    @Override
+    public void onStart(ITestContext context) {
+
+        String browser = BaseClass.getBrowserName();
+        String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
+        reportPath = System.getProperty("user.dir")
+                + "/reports/Report_" + browser + "_" + time + ".html";
+
+        ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
+        spark.config().setReportName("OpenCart Automation - " + browser);
+        spark.config().setDocumentTitle("Automation Report");
+
+        extent = new ExtentReports();
+        extent.attachReporter(spark);
+
+        extent.setSystemInfo("Browser", browser);
+        extent.setSystemInfo("OS",
+                context.getCurrentXmlTest().getParameter("os"));
+        extent.setSystemInfo("User", System.getProperty("user.name"));
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        ExtentTest extentTest = extent.createTest(
+                result.getMethod().getMethodName());
+        test.set(extentTest);
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        test.get().pass("Test Passed");
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        test.get().fail(result.getThrowable());
+
+        try {
+            String path = BaseClass.captureScreen(result.getName());
+            test.get().addScreenCaptureFromPath(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        test.get().skip(result.getThrowable());
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        extent.flush();
+
+        try {
+            Desktop.getDesktop().browse(new File(reportPath).toURI());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

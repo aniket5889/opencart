@@ -3,7 +3,6 @@ package testBase;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -13,148 +12,112 @@ import java.util.Properties;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
 public class BaseClass {
-	
-	public Logger logger;
-	public static WebDriver driver;
-	public Properties p;
 
-	
-	@SuppressWarnings("deprecation")
-	@BeforeClass(groups= {"Sanity", "Regression", "Master", "Datadriven"})
-	@Parameters({"os","browser"})
-	public void setup(String os, String br) throws IOException {
-		
-		FileReader file = new FileReader(".//src//test//resources//config.properties");
-		
-		p = new Properties();
-		
-		p.load(file);
-		
-		logger = LogManager.getLogger(this.getClass());
-		
-		
-		if (p.getProperty("execution_env").equalsIgnoreCase("remote")) {
-		    DesiredCapabilities capabilities = new DesiredCapabilities();
+    protected Logger logger;
+    protected Properties p;
 
-		    // Set platform
-		    if (os.equalsIgnoreCase("windows")) {
-		        capabilities.setPlatform(Platform.WIN11);
-		    } else if (os.equalsIgnoreCase("mac")) {
-		        capabilities.setPlatform(Platform.MAC);
-		    } else if(os.equalsIgnoreCase("linux")) {
-		    	capabilities.setPlatform(Platform.LINUX);
-		    } else {
-		        System.out.println("No Matching OS.");
-		        return;
-		    }
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static ThreadLocal<String> browserName = new ThreadLocal<>();
 
-		    // Set the browser based on the user input
-		    switch (br.toLowerCase()) {
-            case "chrome":
-                capabilities.setBrowserName("chrome");
-                break;
-            case "firefox":
-                capabilities.setBrowserName("firefox");
-                break;
-            case "edge":
-                capabilities.setBrowserName("MicrosoftEdge");
-                break;
-            default:
-                System.out.println("Invalid browser");
-                break;
-                }
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
 
-		    // Set the RemoteWebDriver with the correct Hub URL
-		    String hubURL = "http://localhost:4444/wd/hub";  // Ensure this URL is correct and reachable
-		    try {
-		        // Make sure the URL is not empty and is correctly formed
-		        driver = new RemoteWebDriver(new URL(hubURL), capabilities);
-		    } catch (MalformedURLException e) {
-		        System.out.println("Invalid Hub URL: " + hubURL);
-		        e.printStackTrace();
-		        return;
-		    }
-		}
+    public static String getBrowserName() {
+        return browserName.get();
+    }
 
-		if (p.getProperty("execution_env").equalsIgnoreCase("local")) {
-		    // Local WebDriver setup
-		    switch (br.toLowerCase()) {
-		        case "chrome":
-		            driver = new ChromeDriver();
-		            break;
-		        case "edge":
-		            driver = new EdgeDriver();
-		            break;
-		        case "firefox":
-		            driver = new FirefoxDriver();
-		            break;
-		        default:
-		            System.out.println("Invalid Browser Name...");
-		            return;
-		    }
-		}
+    @BeforeMethod(groups = {"Sanity", "Regression", "Master", "Datadriven"})
+    @Parameters({"os", "browser"})
+    public void setup(String os, String br) throws IOException {
 
+        browserName.set(br);
 
-		
-		
-		driver.manage().deleteAllCookies();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		
-		driver.get(p.getProperty("appURL"));
-		driver.manage().window().maximize();
-	}
-	
-	@AfterClass(groups= {"Sanity", "Regression", "Master", "Datadriven"})
-	public void tearDown() {
-		driver.quit();
-	}
-	
-	@SuppressWarnings("deprecation")
-	public String randomString() {
-		 String generatedString =  RandomStringUtils.randomAlphabetic(10);
-		 return generatedString;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public String randomNumber() {
-		String generatedNumber = RandomStringUtils.randomNumeric(10);
-		return generatedNumber;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public String randomAlphanumeric() {
-		String generatedString =  RandomStringUtils.randomAlphabetic(4); 
-		String generatedNumber = RandomStringUtils.randomNumeric(3);
-		return(generatedString + "@" + generatedNumber);
-	}
-	
-	public String captureScreen(String tname) throws IOException {
-		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-		
-		TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
-		File sourceFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
-		
-		
-		String targetFilePath = System.getProperty("user.dir")+"\\screenshots\\"+ tname + "_"+timeStamp;
-		File targetFile = new File(targetFilePath);
-		
-		sourceFile.renameTo(targetFile);
-		
-		return targetFilePath;
-	}
+        FileReader file = new FileReader(".//src//test//resources//config.properties");
+        p = new Properties();
+        p.load(file);
 
+        logger = LogManager.getLogger(this.getClass());
+
+        WebDriver localDriver = null;
+
+        if (p.getProperty("execution_env").equalsIgnoreCase("remote")) {
+            DesiredCapabilities cap = new DesiredCapabilities();
+
+            cap.setPlatform(
+                os.equalsIgnoreCase("windows") ? Platform.WIN11 :
+                os.equalsIgnoreCase("mac") ? Platform.MAC :
+                Platform.LINUX
+            );
+
+            cap.setBrowserName(
+                br.equalsIgnoreCase("edge") ? "MicrosoftEdge" : br
+            );
+
+            localDriver = new RemoteWebDriver(
+                    new URL("http://localhost:4444/wd/hub"), cap);
+        } else {
+            switch (br.toLowerCase()) {
+                case "chrome": localDriver = new ChromeDriver(); break;
+                case "edge": localDriver = new EdgeDriver(); break;
+                case "firefox": localDriver = new FirefoxDriver(); break;
+                default: throw new RuntimeException("Invalid browser");
+            }
+        }
+
+        driver.set(localDriver);
+
+        getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        getDriver().get(p.getProperty("appURL"));
+        getDriver().manage().window().maximize();
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (getDriver() != null) {
+            getDriver().quit();
+            driver.remove();
+            browserName.remove();
+        }
+    }
+
+    // ================= UTIL METHODS =================
+
+    public String randomString() {
+        return RandomStringUtils.randomAlphabetic(10);
+    }
+
+    public String randomNumber() {
+        return RandomStringUtils.randomNumeric(10);
+    }
+
+    // ✅ MISSING METHOD (ADDED BACK)
+    public String randomAlphanumeric() {
+        return RandomStringUtils.randomAlphabetic(4) + "@" +
+               RandomStringUtils.randomNumeric(3);
+    }
+
+    // Screenshot (Thread Safe)
+    public static String captureScreen(String testName) throws IOException {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        File src = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+
+        String path = System.getProperty("user.dir")
+                + "/screenshots/" + testName + "_" + timeStamp + ".png";
+
+        File dest = new File(path);
+        src.renameTo(dest);
+
+        return path;
+    }
 }
