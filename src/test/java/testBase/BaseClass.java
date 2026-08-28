@@ -21,7 +21,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 
 public class BaseClass {
-
+	
+	
     protected Logger logger;
     protected Properties p;
 
@@ -51,24 +52,39 @@ public class BaseClass {
         WebDriver localDriver = null;
 
         if (p.getProperty("execution_env").equalsIgnoreCase("remote")) {
+
             DesiredCapabilities cap = new DesiredCapabilities();
 
-            cap.setPlatform(
-                os.equalsIgnoreCase("windows") ? Platform.WIN11 :
-                os.equalsIgnoreCase("mac") ? Platform.MAC :
-                Platform.LINUX
-            );
-
+            // Browser
             cap.setBrowserName(
                 br.equalsIgnoreCase("edge") ? "MicrosoftEdge" : br
             );
 
+            // Operating System
+            cap.setCapability(
+                "platformName",
+                os.equalsIgnoreCase("windows")
+                    ? "windows"
+                    : "linux"
+            );
+
+            // Selenium Grid URL
+            String gridUrl = p.getProperty("grid.url");
+
             localDriver = new RemoteWebDriver(
-                    new URL("http://localhost:4444/wd/hub"), cap);
+                    new URL(gridUrl),
+                    cap
+            );
         } else {
             switch (br.toLowerCase()) {
                 case "chrome": localDriver = new ChromeDriver(); break;
-                case "edge": localDriver = new EdgeDriver(); break;
+                case "edge":
+                    String edgeDriverPath = p.getProperty("edge.driver.path");
+                    if (edgeDriverPath != null && !edgeDriverPath.isEmpty()) {
+                        System.setProperty("webdriver.edge.driver", edgeDriverPath);
+                    }
+                    localDriver = new EdgeDriver();
+                    break;
                 case "firefox": localDriver = new FirefoxDriver(); break;
                 default: throw new RuntimeException("Invalid browser");
             }

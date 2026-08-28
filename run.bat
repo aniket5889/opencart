@@ -8,7 +8,7 @@ rmdir /s /q reports screenshots
 mkdir reports screenshots
 
 echo Starting test execution...
-mvn clean test -Dexecution_env=remote
+mvn clean test -Dexecution_env=remote -Dsurefire.suiteXmlFiles=cross_platform_browser.xml
 
 echo Execution finished.
 pause

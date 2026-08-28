@@ -6,27 +6,27 @@
   	
   	
   	<build>
-    <pluginManagement>
-      <plugins>
+    <plugins>
+
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.13.0</version>
         </plugin>
+
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.2</version>
-           <configuration>
-            <suiteXmlFiles>
-            	<suitXmlFile>master.xml</suitXmlFile>
-            </suiteXmlFiles>
-          </configuration>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.5.2</version>
+            <configuration>
+                <suiteXmlFiles>
+                    <suiteXmlFile>cross_platform_browser.xml</suiteXmlFile>
+                </suiteXmlFiles>
+            </configuration>
         </plugin>
-        
-      </plugins>
-    </pluginManagement>
-  </build>
+
+    </plugins>
+</build>
   	
   	
   	<dependencies>
@@ -43,12 +43,24 @@
 		    <artifactId>selenium-api</artifactId>
 		    <version>4.28.1</version>
 		</dependency>
+		
+		<dependency>
+    		<groupId>net.java.dev.jna</groupId>
+    		<artifactId>jna</artifactId>
+    		<version>5.14.0</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-remote-driver -->
 		<dependency>
 		    <groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>selenium-remote-driver</artifactId>
 		    <version>4.28.1</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-databind</artifactId>
+    		<version>2.18.3</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
@@ -143,6 +155,12 @@
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		    <version>3.17.0</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>tech.grasshopper</groupId>
+    		<artifactId>extentreports-cucumber7-adapter</artifactId>
+    		<version>1.14.0</version>
 		</dependency>
 
   	</dependencies>
